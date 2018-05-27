@@ -282,6 +282,7 @@ void elscontroller::on_challongeSubmitButton_clicked()
     if (!winner.isEmpty())
     {
         delete ui->tournamentListWidget->takeItem(ui->tournamentListWidget->currentRow());
+        currentMatch = nullptr;
         ui->matchGroupBox->setEnabled(false);
     }
 }
