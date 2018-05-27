@@ -29,4 +29,5 @@ If for some reason you want to actually build this on your machine, this is what
 - Qt 5.10.1 MSVC2017 64 bit
 - Microsoft Visual C++ Compiler 2015/2017
 - CMake
+
 I will add project (.pro/.pro.user) files at a later in addition with more complete instructions for building (low priority).
