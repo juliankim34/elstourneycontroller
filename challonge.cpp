@@ -35,7 +35,7 @@ void Challonge::getTournaments()
     QUrlQuery params;
 
     params.addQueryItem("api_key", api_key);
-    params.addQueryItem(("state"), "in_progress");  // only show in_progress tournaments
+    params.addQueryItem("state", "in_progress");  // only show in_progress tournaments
     url.setQuery(params);
     qDebug() << url.toString();
     manager->get(QNetworkRequest(url)); // will emit finished(QNetworkReply*) when done

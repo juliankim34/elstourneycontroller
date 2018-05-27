@@ -2,11 +2,13 @@
 #include "ui_elscontroller.h"
 #include <QMessageBox>
 #include <QDesktopServices>
+#include <QtAlgorithms>
 
 elscontroller::elscontroller(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::elscontroller),
-    challonge_manager()
+    challonge_manager(),
+    currentMatch(nullptr)
 {
     /* UI setup */
     ui->setupUi(this);
@@ -25,6 +27,10 @@ elscontroller::elscontroller(QWidget *parent) :
 elscontroller::~elscontroller()
 {
     delete ui;
+    if (currentMatch != nullptr)
+        delete currentMatch;
+    qDeleteAll(helpMenu->actions()); // guaranteed to have items due to constructor
+    delete helpMenu;    // guaranteed to not be nullptr due to constructor
 }
 
 /* Public Functions */
@@ -80,6 +86,7 @@ void elscontroller::hideAllChallongeUI() // also clear out contents
     ui->challongeSignOutButton->hide();
     ui->challongeBackButton->hide();
     ui->tournamentListWidget->clear();
+    ui->completedMatchesButton->hide();
     /* Match Edit Screen */
     ui->matchGroupBox->setEnabled(false);
 }
@@ -104,6 +111,7 @@ void elscontroller::showChallongeUI(bool login, bool tournaments, bool matches)
         ui->challongeSignOutButton->show();
         ui->challongeBackButton->show();
         ui->challongeDescriptionLabel->show();
+        ui->completedMatchesButton->show();
         ui->challongeDescriptionLabel->setText("Select a Tournament/Match:");
         ui->challongeBackButton->setEnabled(false);
         tournamentsMode = true;
@@ -229,6 +237,8 @@ void elscontroller::on_challongeSelectButton_clicked()
         QString score = selectedMatch->getScore();
         setMatch(p1, p2, round, score);
         ui->matchGroupBox->setEnabled(true);
+        ui->p1WinnerCheckBox->setChecked(false);
+        ui->p2WinnerCheckBox->setChecked(false);
     }
 }
 
@@ -269,6 +279,11 @@ void elscontroller::on_challongeSubmitButton_clicked()
         winner = currentMatch->getP2ID();
     }
     challonge_manager.updateMatch(currentMatch->getTourneyID(), currentMatch->getmatchID(), score, winner);
+    if (!winner.isEmpty())
+    {
+        delete ui->tournamentListWidget->takeItem(ui->tournamentListWidget->currentRow());
+        ui->matchGroupBox->setEnabled(false);
+    }
 }
 
 void elscontroller::on_updateScoreboardButton_clicked()
