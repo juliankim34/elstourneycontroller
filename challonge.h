@@ -29,9 +29,10 @@ public:
 
     void setAPIKey(QString key);
     void getTournaments();  // no params needed
-    void getMatches(QString tourney_id);
+    void getMatches(QString tourney_id); // true for completed matches, false for in_progress
     void getParticipants(QString tourney_id);
     void updateMatches(QString tourney_id, QString match_id, QString score, QString winner = "");
+    void reopenMatch(QString tourney_id, QString match_id);
 
 };
 

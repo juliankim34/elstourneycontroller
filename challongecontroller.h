@@ -15,6 +15,7 @@
 #define MATCHES 1
 #define PARTICIPANTS 2
 #define UPDATE 3
+#define REOPEN 4
 
 class ChallongeController : public QObject
 {
@@ -27,9 +28,11 @@ private:
     QMap<QString, QString> currentParticipants;
     QString currentTourneyID;
     int requestType;
+    bool matchesStatus;
 
     void setRequestType(int request);
     void getParticipants(QString tourney_id);
+    void parseMatches(QJsonValue player1_id, QJsonValue player2_id, QJsonObject innerObj, QString winnerID = "");
 
 private slots:
     void replyReceived(QJsonArray data);
@@ -45,8 +48,9 @@ public:
 
     void setAPIKey(QString api_key, QStatusBar *statusBar);
     void displayTournaments(QListWidget *widget);
-    void displayMatches(QString tourney_id, QListWidget *widget);
+    void displayMatches(QString tourney_id, QListWidget *widget, bool status); // true for completed matches, false for in_progress
     void updateMatch(QString tourney_id, QString match_id, QString score, QString winnerID);
+    void reopenMatch(QString tourney_id, QString match_id);
 
 };
 

@@ -428,11 +428,28 @@
              </layout>
             </item>
             <item>
-             <widget class="QPushButton" name="completedMatchesButton">
-              <property name="text">
-               <string>View Completed Matches</string>
-              </property>
-             </widget>
+             <layout class="QHBoxLayout" name="horizontalLayout_7">
+              <item>
+               <widget class="QPushButton" name="reopenMatchButton">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
+                <property name="text">
+                 <string>Re-Open</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="completedMatchesButton">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
+                <property name="text">
+                 <string>View Done</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
             </item>
            </layout>
           </widget>
@@ -484,6 +501,9 @@
                     <bold>true</bold>
                    </font>
                   </property>
+                  <property name="autoFillBackground">
+                   <bool>true</bool>
+                  </property>
                   <property name="text">
                    <string>Player1</string>
                   </property>
@@ -506,6 +526,9 @@
                     <weight>75</weight>
                     <bold>true</bold>
                    </font>
+                  </property>
+                  <property name="autoFillBackground">
+                   <bool>true</bool>
                   </property>
                   <property name="text">
                    <string>VS.</string>
@@ -530,6 +553,9 @@
                     <bold>true</bold>
                    </font>
                   </property>
+                  <property name="autoFillBackground">
+                   <bool>true</bool>
+                  </property>
                   <property name="text">
                    <string>Player2</string>
                   </property>
@@ -551,11 +577,31 @@
                     <pointsize>11</pointsize>
                    </font>
                   </property>
+                  <property name="statusTip">
+                   <string>Link to brackets (opens in default browser).</string>
+                  </property>
+                  <property name="autoFillBackground">
+                   <bool>true</bool>
+                  </property>
                   <property name="text">
                    <string>Round 1</string>
                   </property>
                   <property name="alignment">
                    <set>Qt::AlignCenter</set>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="0">
+                 <widget class="QPushButton" name="p1CopyNameButton">
+                  <property name="text">
+                   <string>Copy to Clipboard</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="2">
+                 <widget class="QPushButton" name="p2CopyNameButton">
+                  <property name="text">
+                   <string>Copy to Clipboard</string>
                   </property>
                  </widget>
                 </item>
@@ -687,7 +733,7 @@
                  </widget>
                 </item>
                 <item row="2" column="2">
-                 <widget class="QPushButton" name="pushButton">
+                 <widget class="QPushButton" name="challongeSubmitUpdateButton">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
                     <horstretch>0</horstretch>

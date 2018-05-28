@@ -43,7 +43,7 @@ private slots:
 
     void on_updateScoreboardButton_clicked();
 
-    void on_pushButton_clicked();
+    void on_challongeSubmitUpdateButton_clicked();
 
     void on_p1WinnerCheckBox_stateChanged(int arg1);
 
@@ -56,6 +56,14 @@ private slots:
     void openWikiInDefaultBrowser();
 
     void openSourceInDefaultBrowser();
+
+    void on_p1CopyNameButton_clicked();
+
+    void on_p2CopyNameButton_clicked();
+
+    void on_completedMatchesButton_clicked();
+
+    void on_reopenMatchButton_clicked();
 
 private:
     /* UI Basic */
@@ -71,12 +79,15 @@ private:
     /* Challonge Tab */
     ChallongeController challonge_manager;
     bool tournamentsMode; // needed to determine behavior of select/refresh buttons FIXME?
+    bool matchesShown;      // true - completed     false - in_progress
     QString currentTourneyID; // needed for refresh button FIXME?
     MatchListWidgetItem* currentMatch;  // needed for submit button FIXME?
+    QClipboard *clipboard;
     void showChallongeUI(bool login, bool tournaments, bool matches);
     void hideAllChallongeUI();
     void clearMatchInfoScreen();
-    void setMatch(QString p1, QString p2, QString round, QString score);
+    void setMatch(QString p1, QString p2, QString round, QString score, QString tourney_id);
+    void copyTextToClipBoard(QString text);
 };
 
 #endif // ELSCONTROLLER_H

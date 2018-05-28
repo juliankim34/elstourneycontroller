@@ -3,6 +3,7 @@
 #include <QMessageBox>
 #include <QDesktopServices>
 #include <QtAlgorithms>
+#include <QClipboard>
 
 elscontroller::elscontroller(QWidget *parent) :
     QMainWindow(parent),
@@ -22,15 +23,19 @@ elscontroller::elscontroller(QWidget *parent) :
     ui->statusbar->showMessage("Welcome to the Elsword Tournament Controller by Synai!");
     displayMaps();
     showChallongeUI(true, false, false); // login screen
+
+    /* Misc */
+    clipboard = QApplication::clipboard();
 }
 
 elscontroller::~elscontroller()
 {
     delete ui;
-    if (currentMatch != nullptr)
-        delete currentMatch;
+    //if (currentMatch != nullptr) // not needed because deleting ui will delete the listWidget which deletes the contents in it (which this points to) (?)
+        //delete currentMatch;
     qDeleteAll(helpMenu->actions()); // guaranteed to have items due to constructor
     delete helpMenu;    // guaranteed to not be nullptr due to constructor
+    //delete clipboard; // generates compiler error? maybe it's RAII
 }
 
 /* Public Functions */
@@ -48,7 +53,7 @@ void elscontroller::displayMaps()
 /* Small section of Private Slots For Menu */
 void elscontroller::displayAboutWindow()
 {
-    QMessageBox::about(NULL, "About", "Elsword Tournament Controller by Synai\t\n\t  Made with Qt 5.10.1\t\n\t  License: LGPL\t");
+    QMessageBox::about(NULL, "About", "Elsword Tournament Controller by Synai\t\n\t  Made with Qt 5.10.1\t\n\t  License: LGPL v3\t");
 }
 
 void elscontroller::openWikiInDefaultBrowser()
@@ -87,6 +92,10 @@ void elscontroller::hideAllChallongeUI() // also clear out contents
     ui->challongeBackButton->hide();
     ui->tournamentListWidget->clear();
     ui->completedMatchesButton->hide();
+    ui->completedMatchesButton->hide();
+    ui->reopenMatchButton->hide();
+    ui->completedMatchesButton->setEnabled(false);
+    ui->reopenMatchButton->setEnabled(false);
     /* Match Edit Screen */
     ui->matchGroupBox->setEnabled(false);
 }
@@ -115,6 +124,8 @@ void elscontroller::showChallongeUI(bool login, bool tournaments, bool matches)
         ui->challongeDescriptionLabel->setText("Select a Tournament/Match:");
         ui->challongeBackButton->setEnabled(false);
         tournamentsMode = true;
+        ui->completedMatchesButton->show();
+        ui->reopenMatchButton->show();
     }
 }
 
@@ -129,12 +140,16 @@ void elscontroller::clearMatchInfoScreen()
     ui->p2WinnerCheckBox->setChecked(false);
 }
 
-void elscontroller::setMatch(QString p1, QString p2, QString round, QString score)
+void elscontroller::setMatch(QString p1, QString p2, QString round, QString score, QString tourney_id)
 {
     QStringList scores;
     ui->matchP1Label->setText(p1);
     ui->matchP2Label->setText(p2);
-    ui->roundLabel->setText(round);
+    QString tourney_embedded_url = "<a href=\"https://challonge.com/" + tourney_id + "\">" + round + "</a>";
+    ui->roundLabel->setText(tourney_embedded_url);
+    ui->roundLabel->setTextFormat(Qt::RichText);
+    ui->roundLabel->setTextInteractionFlags(Qt::TextBrowserInteraction);
+    ui->roundLabel->setOpenExternalLinks(true);
     // Do annoying checks to deal with potential negative values... can't even use regex LOL
     int count = score.count("-");
     if (count == 1)    // score is of "0-0" format, ez best format
@@ -169,6 +184,12 @@ void elscontroller::setMatch(QString p1, QString p2, QString round, QString scor
     }
     ui->challongeP1SpinBox->setValue(scores[0].toInt());
     ui->challongeP2SpinBox->setValue(scores[1].toInt());
+}
+
+void elscontroller::copyTextToClipBoard(QString text)
+{
+    clipboard->setText(text);
+    setConsoleText("Copied to clipboard.", 5);
 }
 
 /* Slots */
@@ -223,9 +244,12 @@ void elscontroller::on_challongeSelectButton_clicked()
     {
         TournamentListWidgetItem* selectedTournament = static_cast<TournamentListWidgetItem*>(ui->tournamentListWidget->currentItem()); // cast from ListWidgetItem*
         currentTourneyID = selectedTournament->getTournamentID();
-        challonge_manager.displayMatches(currentTourneyID, ui->tournamentListWidget);
+        challonge_manager.displayMatches(currentTourneyID, ui->tournamentListWidget, false);    // always show in_progress only
         tournamentsMode = false;
         ui->challongeBackButton->setEnabled(true);
+        ui->completedMatchesButton->setEnabled(true);
+        ui->completedMatchesButton->setText("View Done");
+        matchesShown = false;
     }
     else // update match info box
     {
@@ -235,10 +259,26 @@ void elscontroller::on_challongeSelectButton_clicked()
         QString p2 = selectedMatch->getP2();
         QString round = "Round " + selectedMatch->getRound();
         QString score = selectedMatch->getScore();
-        setMatch(p1, p2, round, score);
-        ui->matchGroupBox->setEnabled(true);
+        setMatch(p1, p2, round, score, selectedMatch->getTourneyID());
         ui->p1WinnerCheckBox->setChecked(false);
         ui->p2WinnerCheckBox->setChecked(false);
+        if (!matchesShown)   // viewing in-progress
+        {
+            ui->matchGroupBox->setEnabled(true);
+            ui->challongeSubmitButton->setEnabled(true); // for some reason setEnabled on matchGroupBox is not recursively applying it to the buttons
+            ui->challongeSubmitUpdateButton->setEnabled(true);
+        }
+        else
+        {
+            // don't enable anything
+            QString winnerID = selectedMatch->getWinnerID();
+            if (winnerID == selectedMatch->getP1ID())
+                ui->p1WinnerCheckBox->setChecked(true);
+            else if (winnerID == selectedMatch->getP2ID())
+                ui->p2WinnerCheckBox->setChecked(true);
+            else
+                qDebug() << "winnerID from selectedMatch did not match P1ID or P2ID";
+        }
     }
 }
 
@@ -254,6 +294,8 @@ void elscontroller::on_challongeBackButton_clicked() // this back button is only
     ui->challongeBackButton->setEnabled(false);
     tournamentsMode = true;
     ui->matchGroupBox->setEnabled(false);
+    ui->completedMatchesButton->setEnabled(false);
+    ui->reopenMatchButton->setEnabled(false);
 }
 
 void elscontroller::on_challongeRefreshButton_clicked()
@@ -261,7 +303,7 @@ void elscontroller::on_challongeRefreshButton_clicked()
     if (tournamentsMode)
         challonge_manager.displayTournaments(ui->tournamentListWidget);
     else
-        challonge_manager.displayMatches(currentTourneyID, ui->tournamentListWidget);
+        challonge_manager.displayMatches(currentTourneyID, ui->tournamentListWidget, matchesShown);
     ui->matchGroupBox->setEnabled(false); // do not allow any more editing of the current match regardless of the mode
 }
 
@@ -283,7 +325,8 @@ void elscontroller::on_challongeSubmitButton_clicked()
     {
         delete ui->tournamentListWidget->takeItem(ui->tournamentListWidget->currentRow());
         currentMatch = nullptr;
-        ui->matchGroupBox->setEnabled(false);
+        ui->challongeSubmitButton->setEnabled(false);
+        ui->challongeSubmitUpdateButton->setEnabled(false);
     }
 }
 
@@ -301,7 +344,7 @@ void elscontroller::on_updateScoreboardButton_clicked()
     on_updateButton_clicked();
 }
 
-void elscontroller::on_pushButton_clicked()
+void elscontroller::on_challongeSubmitUpdateButton_clicked()
 {
     on_challongeSubmitButton_clicked();
     on_updateScoreboardButton_clicked();
@@ -333,4 +376,45 @@ void elscontroller::on_swapSidesButton_clicked()
     ui->p1SpinBox->setValue(ui->p2SpinBox->value());
     ui->p2LineEdit->setText(p1_temp);
     ui->p2SpinBox->setValue(p1_score_temp);
+}
+
+void elscontroller::on_p1CopyNameButton_clicked()
+{
+    copyTextToClipBoard(ui->matchP1Label->text());
+}
+
+void elscontroller::on_p2CopyNameButton_clicked()
+{
+    copyTextToClipBoard(ui->matchP2Label->text());
+}
+
+void elscontroller::on_completedMatchesButton_clicked()
+{
+    if (ui->completedMatchesButton->text() == QString("View Done"))
+    {
+        challonge_manager.displayMatches(currentTourneyID, ui->tournamentListWidget, true); // show completed matches
+        ui->completedMatchesButton->setText("View Not Done");
+        matchesShown = true;
+        ui->reopenMatchButton->setEnabled(true);
+        ui->matchGroupBox->setEnabled(false);
+    }
+    else
+    {
+        challonge_manager.displayMatches(currentTourneyID, ui->tournamentListWidget, false); // show in-progress matches
+        ui->completedMatchesButton->setText("View Done");
+        matchesShown = false;
+        ui->reopenMatchButton->setEnabled(false);
+    }
+}
+
+void elscontroller::on_reopenMatchButton_clicked()
+{
+    if (ui->tournamentListWidget->currentItem() == nullptr)
+    {
+        setConsoleText("Nothing selected!");
+        return;
+    }
+    MatchListWidgetItem* selectedMatch = static_cast<MatchListWidgetItem*>(ui->tournamentListWidget->currentItem());    // cast from ListWidgetItem*
+    challonge_manager.reopenMatch(selectedMatch->getTourneyID(), selectedMatch->getmatchID());
+    delete ui->tournamentListWidget->takeItem(ui->tournamentListWidget->currentRow());
 }

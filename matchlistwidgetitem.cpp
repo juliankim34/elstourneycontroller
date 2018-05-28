@@ -1,7 +1,7 @@
 #include "matchlistwidgetitem.h"
 #include <QDebug>
 
-void MatchListWidgetItem::setInfo(QString tourneyID, QString matchID, QString p1, QString p1_id, QString p2, QString p2_id, QString score, QString round_num)
+void MatchListWidgetItem::setInfo(QString tourneyID, QString matchID, QString p1, QString p1_id, QString p2, QString p2_id, QString score, QString round_num, QString winnerID)
 {
     match_id = matchID;
     player1 = p1;
@@ -11,6 +11,7 @@ void MatchListWidgetItem::setInfo(QString tourneyID, QString matchID, QString p1
     currentScore = score;
     tourney_id = tourneyID;
     round = round_num;
+    winner_id = winnerID;
 }
 
 void MatchListWidgetItem::setToDefaultText()
@@ -65,4 +66,9 @@ QString MatchListWidgetItem::getTourneyID()
 QString MatchListWidgetItem::getRound()
 {
     return round;
+}
+
+QString MatchListWidgetItem::getWinnerID()
+{
+    return winner_id;
 }

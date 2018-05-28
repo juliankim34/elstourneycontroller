@@ -27,12 +27,13 @@ void ChallongeController::displayTournaments(QListWidget* widget)
     challongeAPI->getTournaments(); // will emit returnData(QJsonArray)
 }
 
-void ChallongeController::displayMatches(QString tourney_id, QListWidget *widget)
+void ChallongeController::displayMatches(QString tourney_id, QListWidget *widget, bool status)
 {
     QObject::connect(this, SIGNAL(finished()), this, SLOT(getMatches()));
     setConsoleText("Fetching matches from Challonge API...");
     currentListWidget = widget;
     currentTourneyID = tourney_id;
+    matchesStatus = status;
     getParticipants(tourney_id);    // get this first so we can display the matches as player1_name vs. player2_name and not p1_id vs. p2_id
 }
 
@@ -42,6 +43,14 @@ void ChallongeController::updateMatch(QString tourney_id, QString match_id, QStr
     setRequestType(UPDATE);
     setConsoleText("Submitting score to Challonge...");
     challongeAPI->updateMatches(tourney_id, match_id, score, winnerID);
+}
+
+void ChallongeController::reopenMatch(QString tourney_id, QString match_id)
+{
+    QObject::connect(challongeAPI, SIGNAL(returnData(QJsonArray)), this, SLOT(replyReceived(QJsonArray)));
+    setRequestType(REOPEN);
+    setConsoleText("Submitting reopen match request to Challonge...");
+    challongeAPI->reopenMatch(tourney_id, match_id);
 }
 
 /* Private functions */
@@ -62,11 +71,27 @@ void ChallongeController::setConsoleText(QString text, int duration)
     console->showMessage(text, (duration * 1000));
 }
 
+void ChallongeController::parseMatches(QJsonValue player1_id, QJsonValue player2_id, QJsonObject innerObj, QString winnerID)
+{
+    QString p1ID = QString::number(player1_id.toInt());
+    QString p2ID = QString::number(player2_id.toInt());
+    auto p1Name = currentParticipants.find(p1ID);   // this find should not fail unless someone deletes a participant extremely fast mid API call...
+    auto p2Name = currentParticipants.find(p2ID);
+    QString matchID = QString::number(innerObj["id"].toInt());
+    QString score = innerObj["scores_csv"].toString();
+    QString round = QString::number(innerObj["round"].toInt());
+
+    MatchListWidgetItem* toAdd = new MatchListWidgetItem();
+    toAdd->setInfo(currentTourneyID, matchID, p1Name.value(), p1ID, p2Name.value(), p2ID, score, round, winnerID);
+    toAdd->setToDefaultText();
+    currentListWidget->addItem(toAdd);
+}
+
 /* Slots */
 void ChallongeController::replyReceived(QJsonArray data)
 {
     QObject::disconnect(challongeAPI, SIGNAL(returnData(QJsonArray)), this, SLOT(replyReceived(QJsonArray)));
-    if (data.isEmpty() && requestType != UPDATE)
+    if (data.isEmpty() && requestType != UPDATE && requestType != REOPEN)
     {
         setConsoleText("Oops, something went wrong! API Call did not return any data. Check your API Key and/or network connection.", 20);
         return;
@@ -99,23 +124,15 @@ void ChallongeController::replyReceived(QJsonArray data)
             QJsonValue player2_id = innerObj["player2_id"];
             QJsonValue winner = innerObj["winner_id"];
 
-            if (player1_id != QJsonValue::Null && player2_id != QJsonValue::Null && winner == QJsonValue::Null)
+            if (player1_id != QJsonValue::Null && player2_id != QJsonValue::Null)
             {
-                QString p1ID = QString::number(player1_id.toInt());
-                QString p2ID = QString::number(player2_id.toInt());
-                auto p1Name = currentParticipants.find(p1ID);   // this find should not fail unless someone deletes a participant extremely fast mid API call...
-                auto p2Name = currentParticipants.find(p2ID);
-                QString matchID = QString::number(innerObj["id"].toInt());
-                QString score = innerObj["scores_csv"].toString();
-                QString round = QString::number(innerObj["round"].toInt());
-
-                MatchListWidgetItem* toAdd = new MatchListWidgetItem();
-                toAdd->setInfo(currentTourneyID, matchID, p1Name.value(), p1ID, p2Name.value(), p2ID, score, round);
-                toAdd->setToDefaultText();
-                currentListWidget->addItem(toAdd);
+                if (matchesStatus && winner != QJsonValue::Null)
+                    parseMatches(player1_id, player2_id, innerObj, QString::number(winner.toInt()));
+                else if (!matchesStatus && winner == QJsonValue::Null)
+                    parseMatches(player1_id, player2_id, innerObj);
             }
         }
-        setConsoleText("Fetch matches succeeded. Only in-progress matches are shown (i.e. no winner declared).");
+        setConsoleText("Fetch matches succeeded.");
     break;
     case PARTICIPANTS:
         currentParticipants.clear();
@@ -131,6 +148,9 @@ void ChallongeController::replyReceived(QJsonArray data)
     break;
     case UPDATE:
         setConsoleText("Results submitted to Challonge.");  // nothing necessary to process
+    break;
+    case REOPEN:
+        setConsoleText("Match reopened. Refresh list of in-progress matches. This action may have resetted other matches too.");
     break;
     default:
         qDebug() << "Unrecognized requestType";

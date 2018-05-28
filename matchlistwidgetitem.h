@@ -9,7 +9,7 @@ class MatchListWidgetItem : public QListWidgetItem
 public:
     MatchListWidgetItem() = default; // should call QListWidgetItem() for me
 
-    void setInfo(QString tourneyID, QString matchID, QString p1, QString p1_id, QString p2, QString p2_id, QString score, QString round_num);
+    void setInfo(QString tourneyID, QString matchID, QString p1, QString p1_id, QString p2, QString p2_id, QString score, QString round_num, QString winnerID = "");
     void setToDefaultText();  // default will "p1 vs. p2"
     QString getmatchID();
     QString getP1();
@@ -19,6 +19,7 @@ public:
     QString getScore();
     QString getTourneyID();
     QString getRound();
+    QString getWinnerID();
 
 
 private:
@@ -30,6 +31,7 @@ private:
     QString currentScore;
     QString tourney_id;
     QString round;
+    QString winner_id;
 };
 
 #endif // MATCHLISTWIDGETITEM_H

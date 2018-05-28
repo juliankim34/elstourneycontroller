@@ -107,6 +107,28 @@ void Challonge::updateMatches(QString tourney_id, QString match_id, QString scor
     netRequest.setHeader(QNetworkRequest::ContentTypeHeader, QString("application/json"));
     manager->put(netRequest, payload); // PUT request, will emit finished(QNetworkReply*) when done
 }
+
+void Challonge::reopenMatch(QString tourney_id, QString match_id)
+{
+    if (api_key.isEmpty() || tourney_id.isEmpty() || match_id.isEmpty())
+    {
+        qDebug() << "api_key/tourney_id/match_id cannot be empty";
+        return;
+    }
+    QObject::connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(replyReceived(QNetworkReply*)));
+
+    QString request = "https://api.challonge.com/v1/tournaments/" + tourney_id + "/matches/" + match_id + "/reopen.json";
+    QUrl url(request);
+    QUrlQuery params;
+
+    params.addQueryItem("api_key", api_key);
+    url.setQuery(params);
+    qDebug() << url.toString();
+    QNetworkRequest netRequest(url);
+    netRequest.setHeader(QNetworkRequest::ContentTypeHeader, QString("application/x-www-form-urlencoded"));
+
+    manager->post(netRequest, QByteArray());   // do not need any payload
+}
 /* End public functions */
 
 /* SIGNAL Function(s) */
