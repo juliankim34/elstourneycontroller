@@ -1,4 +1,5 @@
 #include "filemanager.h"
+#include <QDir>
 
 FileManager::FileManager()
 {
@@ -27,13 +28,16 @@ int FileManager::writeGameInfo(QString p1_name, QString p2_name,
 
 void FileManager::setupFiles()
 {
-    player1NameFile.setFileName("player1_name.txt");
-    player2NameFile.setFileName("player2_name.txt");
-    player1ScoreFile.setFileName("player1_score.txt");
-    player2ScoreFile.setFileName("player2_score.txt");
-    infoFile1.setFileName("info_1.txt");
-    infoFile2.setFileName("info_2.txt");
-    infoFile3.setFileName("info_3.txt");
+    QDir dir;
+    if (!dir.exists("info"))
+        dir.mkdir("info");
+    player1NameFile.setFileName("info/player1_name.txt");
+    player2NameFile.setFileName("info/player2_name.txt");
+    player1ScoreFile.setFileName("info/player1_score.txt");
+    player2ScoreFile.setFileName("info/player2_score.txt");
+    infoFile1.setFileName("info/info_1.txt");
+    infoFile2.setFileName("info/info_2.txt");
+    infoFile3.setFileName("info/info_3.txt");
 }
 
 void FileManager::openFiles()

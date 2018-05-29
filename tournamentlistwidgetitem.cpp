@@ -1,5 +1,4 @@
 #include "tournamentlistwidgetitem.h"
-#include <QDebug>
 
 void TournamentListWidgetItem::setInfo(QString tourney_name, QString tourney_id)
 {
@@ -11,7 +10,7 @@ void TournamentListWidgetItem::setToDefaultText()
 {
     if (tournament_name.isEmpty())
     {
-        qDebug() << "No tournament_name supplied";
+        //qDebug() << "No tournament_name supplied";
         setText("Unnamed Tournament");
     }
     else

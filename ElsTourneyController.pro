@@ -49,3 +49,5 @@ RESOURCES += \
     data/players.qrc
 
 win32:RC_ICONS += mad_paradox.ico
+
+CONFIG(release):DEFINES += QT_NO_DEBUG_OUTPUT

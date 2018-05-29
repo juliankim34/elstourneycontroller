@@ -1,5 +1,4 @@
 #include "matchlistwidgetitem.h"
-#include <QDebug>
 
 void MatchListWidgetItem::setInfo(QString tourneyID, QString matchID, QString p1, QString p1_id, QString p2, QString p2_id, QString score, QString round_num, QString winnerID)
 {
@@ -18,7 +17,7 @@ void MatchListWidgetItem::setToDefaultText()
 {
     if (player1.isEmpty() || player2.isEmpty())
     {
-        qDebug() << "One or both of the players are empty strings";
+        //qDebug() << "One or both of the players are empty strings";
         setText("Empty Match (should not happen)");
     }
     else
