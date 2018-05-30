@@ -9,7 +9,8 @@ Currently, the Elsword Tournament Controller can do the following functions:
 - Random Map Picker
 
 ## Download
-Download link will be made available shortly. Most likely after the re-open matches planned feature is finished.
+Download the compiled binary (.exe file) here: https://github.com/Synai/elstourneycontroller/releases
+If you want the latest version, download the .zip file from the release tagged as "Latest Release".
 
 ### Preview Images
 ![alt text](https://i.imgur.com/EVmsdzZ.png) ![alt text](https://i.imgur.com/IgCa1XP.png)
