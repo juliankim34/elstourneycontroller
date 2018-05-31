@@ -13,7 +13,7 @@ Download the compiled binary (.exe file) here: https://github.com/Synai/elstourn
 If you want the latest version, download the .zip file from the release tagged as "Latest Release".
 
 ### Preview Images
-![alt text](https://i.imgur.com/EVmsdzZ.png) ![alt text](https://i.imgur.com/IgCa1XP.png)
+![alt text](https://i.imgur.com/EVmsdzZ.png) ![alt text](https://i.imgur.com/IgCa1XP.png) ![alt text](https://i.imgur.com/wZRGUWQ.gif)
 ## Planned Features
 The following features are planned to be added (in order of priority, somewhat):
 - ~~Display completed matches and allow for re-opening of matches for when someone mistakenly reports the wrong winner (in the current build once you report the winner it's considered final)~~
