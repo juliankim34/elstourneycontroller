@@ -3,7 +3,7 @@
 
 int main(int argc, char *argv[])
 {
-    QCoreApplication::addLibraryPath("./");
+    QCoreApplication::addLibraryPath(".");
     QApplication a(argc, argv);
     //controller w;
     elscontroller w;
