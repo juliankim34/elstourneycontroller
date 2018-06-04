@@ -418,3 +418,19 @@ void elscontroller::on_reopenMatchButton_clicked()
     challonge_manager.reopenMatch(selectedMatch->getTourneyID(), selectedMatch->getmatchID());
     delete ui->tournamentListWidget->takeItem(ui->tournamentListWidget->currentRow());
 }
+/*
+void elscontroller::on_copyButtonMsg1_clicked()
+{
+    copyTextToClipBoard(ui->copyEdit1->text());
+}
+
+void elscontroller::on_copyButtonMsg2_clicked()
+{
+    copyTextToClipBoard(ui->copyEdit2->text());
+}
+
+void elscontroller::on_copyButtonMsg3_clicked()
+{
+    copyTextToClipBoard(ui->copyEdit3->text());
+}
+*/

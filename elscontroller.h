@@ -64,7 +64,13 @@ private slots:
     void on_completedMatchesButton_clicked();
 
     void on_reopenMatchButton_clicked();
+/*
+    void on_copyButtonMsg1_clicked();
 
+    void on_copyButtonMsg2_clicked();
+
+    void on_copyButtonMsg3_clicked();
+*/
 private:
     /* UI Basic */
     Ui::elscontroller *ui;
