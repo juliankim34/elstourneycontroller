@@ -9,7 +9,7 @@ Currently, the Elsword Tournament Controller can do the following functions:
 - Random Map Picker
 
 ## Download
-Download the compiled binary (.exe file) here: https://github.com/Synai/elstourneycontroller/releases
+Download the compiled binary (.exe file) here: https://github.com/Synai/elstourneycontroller/releases.
 If you want the latest version, download the .zip file from the release tagged as "Latest Release".
 
 ### Preview
@@ -20,9 +20,9 @@ The following features are planned to be added (in order of priority, somewhat):
 - Create a third tab: "Misc." to allow for easy access to copy-paste messages that can be custom set (ex. default messages for lag calls, or rules, etc)
 - Create a LAG CALL Button that will clip the Twitch stream at the current time when pressed. Allows for easier time to view lag calls where the decision is not immediately obvious.
 
-## Motivation
-Everyone wants to just watch the action in tournaments, no one wants to watch streamers fiddle with their overlays, update matches on Challonge, or spend 5 min picking a random map, hence this program.
-Now if only participants in tournaments could show up on time prepared...
+## Help
+There is a wiki page for this repo here: https://github.com/Synai/elstourneycontroller/wiki.
+It contains some guides such as getting Challonge API key, setting up Scoreboard/Overlay, etc.
 
 ## Building
 If for some reason you want to actually build this on your machine, this is what I used/what you'll need (Windows):
