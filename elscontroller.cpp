@@ -23,9 +23,11 @@ elscontroller::elscontroller(QWidget *parent) :
     ui->statusbar->showMessage("Welcome to the Elsword Tournament Controller by Synai!");
     displayMaps();
     showChallongeUI(true, false, false); // login screen
+    ui->info1LineEdit->setCurrentIndex(0);
 
     /* Misc */
     clipboard = QApplication::clipboard();
+    twitch_manager.setup(ui->statusbar, ui->twitchIDLabel, ui->twitchLiveLabel, ui->twitchStreamTitleLabel);
 }
 
 elscontroller::~elscontroller()
@@ -434,3 +436,20 @@ void elscontroller::on_copyButtonMsg3_clicked()
     copyTextToClipBoard(ui->copyEdit3->text());
 }
 */
+
+void elscontroller::on_twitchConnectButton_clicked()
+{
+    QString url = twitch_manager.getTwitchConnectURL();
+    QDesktopServices::openUrl(QUrl(url));
+}
+
+void elscontroller::on_twitchValidateButton_clicked()
+{
+    QString redirect_url = ui->redirectURILineEdit->text();
+    if (redirect_url.isEmpty())
+    {
+        setConsoleText("Twitch redirect URL cannot be empty!", 10);
+        return;
+    }
+    twitch_manager.validateRedirectURL(redirect_url);
+}

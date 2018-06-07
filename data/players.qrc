@@ -1,5 +1,8 @@
 <RCC>
     <qresource prefix="/">
         <file>maplist.txt</file>
+        <file>twitch_connect.png</file>
+        <file>client_id.txt</file>
+        <file>client_secret.txt</file>
     </qresource>
 </RCC>

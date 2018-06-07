@@ -31,7 +31,9 @@ SOURCES += \
     challongecontroller.cpp \
     tournamentlistwidgetitem.cpp \
     matchlistwidgetitem.cpp \
-    elscontroller.cpp
+    elscontroller.cpp \
+    twitch.cpp \
+    twitchcontroller.cpp
 
 HEADERS += \
         filemanager.h \
@@ -40,7 +42,9 @@ HEADERS += \
     challongecontroller.h \
     tournamentlistwidgetitem.h \
     matchlistwidgetitem.h \
-    elscontroller.h
+    elscontroller.h \
+    twitch.h \
+    twitchcontroller.h
 
 FORMS += \
     elscontroller.ui
@@ -50,4 +54,4 @@ RESOURCES += \
 
 win32:RC_ICONS += mad_paradox.ico
 
-CONFIG(release):DEFINES += QT_NO_DEBUG_OUTPUT
+#CONFIG(release):DEFINES += QT_NO_DEBUG_OUTPUT

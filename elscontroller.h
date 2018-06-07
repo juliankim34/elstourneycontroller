@@ -7,6 +7,7 @@
 #include "mapmanager.h"
 #include "filemanager.h"
 #include "challongecontroller.h"
+#include "twitchcontroller.h"
 
 namespace Ui {
 class elscontroller;
@@ -71,6 +72,10 @@ private slots:
 
     void on_copyButtonMsg3_clicked();
 */
+    void on_twitchConnectButton_clicked();
+
+    void on_twitchValidateButton_clicked();
+
 private:
     /* UI Basic */
     Ui::elscontroller *ui;
@@ -94,6 +99,9 @@ private:
     void clearMatchInfoScreen();
     void setMatch(QString p1, QString p2, QString round, QString score, QString tourney_id);
     void copyTextToClipBoard(QString text);
+
+    /* Twitch Tab */
+    TwitchController twitch_manager;
 };
 
 #endif // ELSCONTROLLER_H
