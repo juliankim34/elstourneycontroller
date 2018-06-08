@@ -8,6 +8,7 @@
 #include <QLabel>
 #include <QUrlQuery>
 #include <QJsonDocument>
+#include <QGroupBox>
 
 class TwitchController : public QObject
 {
@@ -20,6 +21,7 @@ private:
     QLabel* id_label;
     QLabel* liveStatus_label;
     QLabel* streamTitle_label;
+    QGroupBox* twitchSection;
 
     /* Twitch API Info */
     QString clientID;
@@ -29,10 +31,12 @@ private:
     QString refreshToken;
     QString redirectURI;
     int requestType;
+    bool refreshAttempted;
 
     /* User Info */
     QString userID;
     QString userLogin;
+    QString streamID;
 
     /* Misc/Functions */
     QRandomGenerator generator;
@@ -44,9 +48,16 @@ private:
     /* Functions below parse the network replies of the function named after "parse" from Twitch class */
     void parseGetAccessToken(QJsonDocument jsonDoc);
     void parseValidateAccessToken(QJsonDocument jsonDoc);
+    void parseGetStreams(QJsonDocument jsonDoc);
+
+    void refreshAccessToken();
+    void parseRefreshAccessToken(QJsonDocument jsonDoc);
+    void parseClipStream(QJsonDocument jsonDoc);
 
 private slots:
     void parseJsonReply(QJsonDocument jsonDoc);
+    void getStreamInfoSlot(bool validated);
+    void clipStreamSlot(bool validated);
 
 signals:
     void finished(bool status);
@@ -54,14 +65,20 @@ signals:
 public:
     TwitchController();
     ~TwitchController();
-    void setup(QStatusBar* statusBar, QLabel* id, QLabel* liveStatus, QLabel* streamTitle);
+    void setup(QStatusBar* statusBar, QLabel* id, QLabel* liveStatus, QLabel* streamTitle, QGroupBox *twitchBox);
     QString getTwitchConnectURL();
     void validateRedirectURL(QString redirect_url);
+    void getStreamInfo();
+    void signOut();
+    void clipStream();
 
     enum RequestType
     {
         getAccessToken,
-        validateAccessToken
+        validateAccessToken,
+        getRefreshedAccessToken,
+        getStreams,
+        clipCurrentStream
     };
 };
 

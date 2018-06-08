@@ -9,7 +9,8 @@ elscontroller::elscontroller(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::elscontroller),
     challonge_manager(),
-    currentMatch(nullptr)
+    currentMatch(nullptr),
+    timer(new QTimer())
 {
     /* UI setup */
     ui->setupUi(this);
@@ -23,11 +24,11 @@ elscontroller::elscontroller(QWidget *parent) :
     ui->statusbar->showMessage("Welcome to the Elsword Tournament Controller by Synai!");
     displayMaps();
     showChallongeUI(true, false, false); // login screen
-    ui->info1LineEdit->setCurrentIndex(0);
+    ui->mainTabWidget->setCurrentIndex(0);
 
     /* Misc */
     clipboard = QApplication::clipboard();
-    twitch_manager.setup(ui->statusbar, ui->twitchIDLabel, ui->twitchLiveLabel, ui->twitchStreamTitleLabel);
+    twitch_manager.setup(ui->statusbar, ui->twitchIDLabel, ui->twitchLiveLabel, ui->twitchStreamTitleLabel, ui->twitchSectionGroupBox);
 }
 
 elscontroller::~elscontroller()
@@ -37,6 +38,7 @@ elscontroller::~elscontroller()
         //delete currentMatch;
     qDeleteAll(helpMenu->actions()); // guaranteed to have items due to constructor
     delete helpMenu;    // guaranteed to not be nullptr due to constructor
+    delete timer;
     //delete clipboard; // generates compiler error? maybe it's RAII
 }
 
@@ -287,7 +289,7 @@ void elscontroller::on_challongeSelectButton_clicked()
 void elscontroller::on_challongeSignOutButton_clicked()
 {
     showChallongeUI(true, false, false);
-    setConsoleText("Signed out.", 10);
+    setConsoleText("Signed out of Challonge.", 10);
 }
 
 void elscontroller::on_challongeBackButton_clicked() // this back button is only clickable to move from match selection -> tournament selection
@@ -452,4 +454,29 @@ void elscontroller::on_twitchValidateButton_clicked()
         return;
     }
     twitch_manager.validateRedirectURL(redirect_url);
+}
+
+void elscontroller::on_twitchRefreshButton_clicked()
+{
+    twitch_manager.getStreamInfo();
+}
+
+void elscontroller::on_twitchSignOutButton_clicked()
+{
+    ui->redirectURILineEdit->clear();
+    twitch_manager.signOut();
+}
+
+void elscontroller::timer_done()
+{
+    QObject::disconnect(timer, SIGNAL(timeout()), this, SLOT(timer_done()));
+    ui->twitchClipStreamButton->setEnabled(true);
+}
+
+void elscontroller::on_twitchClipStreamButton_clicked()
+{
+    twitch_manager.clipStream();
+    ui->twitchClipStreamButton->setEnabled(false);
+    QObject::connect(timer, SIGNAL(timeout()), this, SLOT(timer_done()));
+    timer->start(5000); // 5 seconds
 }

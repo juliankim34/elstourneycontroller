@@ -8,6 +8,7 @@
 #include "filemanager.h"
 #include "challongecontroller.h"
 #include "twitchcontroller.h"
+#include <QTimer>
 
 namespace Ui {
 class elscontroller;
@@ -76,6 +77,14 @@ private slots:
 
     void on_twitchValidateButton_clicked();
 
+    void on_twitchRefreshButton_clicked();
+
+    void on_twitchSignOutButton_clicked();
+
+    void on_twitchClipStreamButton_clicked();
+
+    void timer_done();
+
 private:
     /* UI Basic */
     Ui::elscontroller *ui;
@@ -102,6 +111,7 @@ private:
 
     /* Twitch Tab */
     TwitchController twitch_manager;
+    QTimer* timer;
 };
 
 #endif // ELSCONTROLLER_H

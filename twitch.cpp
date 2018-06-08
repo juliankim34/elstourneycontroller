@@ -106,7 +106,7 @@ void Twitch::getStreams(QString clientID, QString userID)   // only accept userI
 {
     QObject::connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(replyReceived(QNetworkReply*)));
 
-    QString request = "https://api.twitch.tv/helix/streams?user_id" + userID;
+    QString request = "https://api.twitch.tv/helix/streams?user_login=" + userID;
     QUrl url(request);
     qDebug() << "Twitch::getStreams " + url.toString();
 
