@@ -106,6 +106,14 @@ void TwitchController::clipStream()
     twitch->validateAccessToken(accessToken);
 }
 
+/*void TwitchController::refreshAccToken()
+{
+    setConsoleText("Refreshing Access Token...");
+    refreshAccessToken();
+}
+* DEBUG ONLY FUNCTION
+* /
+
 /* Public Functions End */
 
 /* Private functions start */
@@ -204,6 +212,7 @@ void TwitchController::parseRefreshAccessToken(QJsonDocument jsonDoc)
     if (jsonDoc.isEmpty() || jsonDoc["error"] != QJsonValue::Undefined)
     {
         emit finished(false);   // failed
+        setConsoleText("Refresh Access Token failed.");
         return;
     }
     setConsoleText("Access Token successfully refreshed.");
@@ -220,7 +229,7 @@ void TwitchController::parseClipStream(QJsonDocument jsonDoc)
 {
     if (jsonDoc.isEmpty())
     {
-        setConsoleText("Error: Clip creation did not return back clip URL. Please try again.");
+        setConsoleText("Error: Clip creation did not return back clip URL. Please try again. Twitch Clip API service may also be down.");
         return;
     }
     QJsonArray data = jsonDoc["data"].toArray();
@@ -277,8 +286,8 @@ void TwitchController::getStreamInfoSlot(bool validated)
     {
         if (refreshAttempted)   // do not attempt to refresh twice or get stuck in a loop
         {
-            setConsoleText("Fatal Error: Access Token is not valid and could not be refreshed. Please re-authorize your Twitch account.");
             signOut();
+            setConsoleText("Fatal Error: Access Token is not valid and could not be refreshed. Please re-authorize your Twitch account.");
             return;
         }
         setConsoleText("Error: Access Token not valid! Attempting to refresh token...");
@@ -301,8 +310,8 @@ void TwitchController::clipStreamSlot(bool validated)
     {
         if (refreshAttempted)   // do not attempt to refresh twice or get stuck in a loop
         {
-            setConsoleText("Fatal Error: Access Token is not valid and could not be refreshed. Please re-authorize your Twitch account.");
             signOut();
+            setConsoleText("Fatal Error: Access Token is not valid and could not be refreshed. Please re-authorize your Twitch account.");
             return;
         }
         setConsoleText("Error: Access Token not valid! Attempting to refresh token...");
@@ -315,5 +324,5 @@ void TwitchController::clipStreamSlot(bool validated)
     QObject::connect(twitch, SIGNAL(returnData(QJsonDocument)), this, SLOT(parseJsonReply(QJsonDocument)));
     setRequestType(TwitchController::clipCurrentStream);
     setConsoleText("Creating clip. Please be patient as this takes time...");
-    twitch->createClip(clientID, streamID);
+    twitch->createClip(accessToken, streamID);
 }

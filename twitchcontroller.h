@@ -71,6 +71,7 @@ public:
     void getStreamInfo();
     void signOut();
     void clipStream();
+    //void refreshAccToken(); debugging func only
 
     enum RequestType
     {

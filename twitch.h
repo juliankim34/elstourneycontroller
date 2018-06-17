@@ -33,7 +33,7 @@ public:
     void refreshAccessToken(QString clientID, QString clientSecret, QString refreshToken);
     void getAccessToken(QString clientID, QString clientSecret, QString authCode, QString redirectURI);
     void getStreams(QString clientID, QString userID);
-    void createClip(QString clientID, QString streamID);
+    void createClip(QString accessToken, QString streamID);
 };
 
 #endif // TWITCH_H

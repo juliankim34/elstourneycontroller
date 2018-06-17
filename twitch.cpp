@@ -95,7 +95,7 @@ void Twitch::refreshAccessToken(QString clientID, QString clientSecret, QString 
     QNetworkRequest netRequest(url);
     netRequest.setHeader(QNetworkRequest::ContentTypeHeader, QString("application/x-www-form-urlencoded"));
 
-    QString payload = QString("?grant_type=refresh_token&refresh_token=") + refreshToken + QString("&client_id=") + clientID + QString("&client_secret=") + clientSecret;
+    QString payload = QString("grant_type=refresh_token&refresh_token=") + refreshToken + QString("&client_id=") + clientID + QString("&client_secret=") + clientSecret;
     QUrl payload_encoded(payload);  // url encode the payload because tokens not guaranteed to be url safe
     qDebug() << payload_encoded.toString();
 
@@ -115,7 +115,7 @@ void Twitch::getStreams(QString clientID, QString userID)   // only accept userI
     manager->get(netRequest);
 }
 
-void Twitch::createClip(QString clientID, QString streamID)
+void Twitch::createClip(QString accessToken, QString streamID)
 {
     QObject::connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(replyReceived(QNetworkReply*)));
 
@@ -129,7 +129,8 @@ void Twitch::createClip(QString clientID, QString streamID)
     qDebug() << "Twitch::createClip " + url.toString();
 
     QNetworkRequest netRequest(url);
-    QString header_payload = QString("Bearer ") + clientID;
+    netRequest.setHeader(QNetworkRequest::ContentTypeHeader, QString("application/x-www-form-urlencoded"));
+    QString header_payload = QString("Bearer ") + accessToken;
     netRequest.setRawHeader(QByteArray("Authorization"), header_payload.toUtf8());
     manager->post(netRequest, QByteArray()); // no payload
 }

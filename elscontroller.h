@@ -85,6 +85,8 @@ private slots:
 
     void timer_done();
 
+    //void on_twitchRefreshTokenButton_clicked();
+
 private:
     /* UI Basic */
     Ui::elscontroller *ui;

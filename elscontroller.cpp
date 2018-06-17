@@ -480,3 +480,10 @@ void elscontroller::on_twitchClipStreamButton_clicked()
     QObject::connect(timer, SIGNAL(timeout()), this, SLOT(timer_done()));
     timer->start(5000); // 5 seconds
 }
+
+/* DEBUG FUNC ONLY
+void elscontroller::on_twitchRefreshTokenButton_clicked()
+{
+    twitch_manager.refreshAccToken();
+}
+*/
