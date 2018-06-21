@@ -324,5 +324,5 @@ void TwitchController::clipStreamSlot(bool validated)
     QObject::connect(twitch, SIGNAL(returnData(QJsonDocument)), this, SLOT(parseJsonReply(QJsonDocument)));
     setRequestType(TwitchController::clipCurrentStream);
     setConsoleText("Creating clip. Please be patient as this takes time...");
-    twitch->createClip(accessToken, streamID);
+    twitch->createClip(accessToken, userID);
 }
