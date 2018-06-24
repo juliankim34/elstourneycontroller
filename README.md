@@ -21,6 +21,7 @@ The following features are planned to be added (in order of priority, somewhat):
 - ~~Display completed matches and allow for re-opening of matches for when someone mistakenly reports the wrong winner (in the current build once you report the winner it's considered final)~~
 - ~~Create a LAG CALL Button that will clip the Twitch stream at the current time when pressed. Allows for easier time to view lag calls where the decision is not immediately obvious.~~
 - Create a new tab: "Misc." to allow for easy access to copy-paste messages that can be custom set (ex. default messages for lag calls, or rules, etc)
+- Strawpoll Integration - easy creation of Strawpolls for when viewer votes are requested to make a decision (?)
 - Feel free suggest your own ideas/suggestions to me
 
 ## Help
