@@ -17,10 +17,12 @@ private:
     QFile infoFile1;
     QFile infoFile2;
     QFile infoFile3;
+    QFile xmlFile;
 
     void openFiles();
     void closeFiles();
     int writeFile(QFile &file, QString text);
+    int writeXMLFile(QFile &xmlFile, QString p1_name, QString p2_name, QString p1_score, QString p2_score);
 
 public:
     FileManager();

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>ETC - Scoreboard</title>
+        <link rel="stylesheet" href="css/style.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script type="text/javascript" src="js/model.js"></script>
+        <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+        <link href='https://fonts.googleapis.com/css?family=Open Sans' rel='stylesheet'>
+    </head>
+    
+    <body>
+    
+    <img alt="Scoreboard" src="images/overlay2.png" />
+    <div id="p1">
+        Player/Team1
+    </div>
+    <script> $('#p1').animateCss('fadeIn'); </script>
+    <div id="p1_score">
+        0
+    </div>
+    <script> $('#p1_score').animateCss('fadeIn'); </script>
+    <div id="p2">
+        Player/Team2
+    </div>
+    <script> $('#p2').animateCss('fadeIn'); </script>
+    <div id="p2_score">
+        0
+    </div>
+    <script> $('#p2_score').animateCss('fadeIn'); </script>
+    <div id="main">
+        <script> 
+        startChecks();
+        </script>
+    </div>
+    </body>
+</html>

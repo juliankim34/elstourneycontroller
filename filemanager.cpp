@@ -20,10 +20,25 @@ int FileManager::writeGameInfo(QString p1_name, QString p2_name,
     ret += writeFile(infoFile1, info_1);
     ret += writeFile(infoFile2, info_2);
     ret += writeFile(infoFile3, info_3);
+    ret += writeXMLFile(xmlFile, p1_name, p2_name, p1_score, p2_score);
 
     closeFiles();
 
     return ret;
+}
+
+int FileManager::writeXMLFile(QFile &xmlFile, QString p1_name, QString p2_name, QString p1_score, QString p2_score)
+{
+    // Construct XML manually because the file will be small and don't want to import whole new classes just for this
+    QString start = "<player_info>\n";
+    QString p1 = "\t<p1>" + p1_name + "</p1>\n";
+    QString p1_s = "\t<p1_score>" + p1_score + "</p1_score>\n";
+    QString p2 = "\t<p2>" + p2_name + "</p2>\n";
+    QString p2_s = "\t<p2_score>" + p2_score + "</p2_score>\n";
+    QString end = "</player_info>";
+    QString xmlContents = start + p1 + p1_s + p2 + p2_s + end;
+
+    return writeFile(xmlFile, xmlContents);
 }
 
 void FileManager::setupFiles()
@@ -38,6 +53,7 @@ void FileManager::setupFiles()
     infoFile1.setFileName("info/info_1.txt");
     infoFile2.setFileName("info/info_2.txt");
     infoFile3.setFileName("info/info_3.txt");
+    xmlFile.setFileName("Browser/player_info.xml");
 }
 
 void FileManager::openFiles()
@@ -49,6 +65,7 @@ void FileManager::openFiles()
     infoFile1.open(QIODevice::WriteOnly | QIODevice::Truncate);
     infoFile2.open(QIODevice::WriteOnly | QIODevice::Truncate);
     infoFile3.open(QIODevice::WriteOnly | QIODevice::Truncate);
+    xmlFile.open(QIODevice::WriteOnly | QIODevice::Truncate);
 }
 
 void FileManager::closeFiles()  // closing an unopened file results in nothing for a QFile, no error checking needed
@@ -60,6 +77,7 @@ void FileManager::closeFiles()  // closing an unopened file results in nothing f
     infoFile1.close();
     infoFile2.close();
     infoFile3.close();
+    xmlFile.close();
 }
 
 int FileManager::writeFile(QFile &file, QString text)
