@@ -27,7 +27,7 @@ SOURCES += \
         main.cpp \
         filemanager.cpp \
         mapmanager.cpp \
-    challonge.cpp \
+    challonge.cpp \EO6zTUqYC4qHuVxExzBvppVJxkTPJzFXuioykjmC
     challongecontroller.cpp \
     tournamentlistwidgetitem.cpp \
     matchlistwidgetitem.cpp \
